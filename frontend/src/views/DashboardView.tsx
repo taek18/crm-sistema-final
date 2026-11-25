@@ -14,6 +14,7 @@ import { RankingTable } from '../components/RankingTable';
 import { RankingChart } from '../components/RankingChart';
 import { AttributesChart } from '../components/AttributesChart';
 import { RiskAlerts } from '../components/RiskAlerts';
+import { AnalyticsChat } from '../components/AnalyticsChat';
 
 export const DashboardView: React.FC = () => {
   const [rankingData, setRankingData] = useState<RankingResponse | null>(null);
@@ -192,6 +193,8 @@ export const DashboardView: React.FC = () => {
         <RankingChart ranking={rankingData?.top_platillos || []} />
         <AttributesChart trends={trendsData} />
       </div>
+
+      <AnalyticsChat />
 
       {/* Nueva Sección Separada: Sentimientos del Establecimiento */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs space-y-4">

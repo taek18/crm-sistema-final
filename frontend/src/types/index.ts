@@ -154,6 +154,22 @@ export interface TrendsResponse {
   sentimientos_establecimiento?: EstablishmentTrendsSummary;
 }
 
+export interface AnalyticsChatResponse {
+  respuesta: string;
+  consulta_interpretada: {
+    metrica: string;
+    agrupacion: string;
+    periodo_dias: number;
+  };
+  grafica: {
+    tipo: string;
+    titulo: string;
+    eje_x: string;
+    eje_y: string;
+    datos: { etiqueta: string; valor: number }[];
+  };
+}
+
 export interface TextReviewPayload {
   texto: string;
   canal_origen?: string;

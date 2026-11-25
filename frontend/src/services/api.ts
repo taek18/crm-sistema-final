@@ -3,6 +3,7 @@ import type {
   Review,
   RankingResponse,
   TrendsResponse,
+  AnalyticsChatResponse,
   TextReviewPayload,
   Order,
   OrderCreatePayload,
@@ -93,6 +94,15 @@ export const api = {
   getTrends: async (dias: number = 7): Promise<TrendsResponse> => {
     const res = await fetch(`${API_BASE}/analytics/trends?dias=${dias}`);
     return handleResponse<TrendsResponse>(res);
+  },
+
+  askAnalytics: async (pregunta: string): Promise<AnalyticsChatResponse> => {
+    const res = await fetch(`${API_BASE}/analytics/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pregunta }),
+    });
+    return handleResponse<AnalyticsChatResponse>(res);
   },
 
   // Reset administrativo de la BD

@@ -1,4 +1,5 @@
-from pydantic import BaseModel, ConfigDict
+from enum import Enum
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional
 
 class DishRankingItem(BaseModel):
@@ -62,3 +63,46 @@ class TrendsResponse(BaseModel):
     atributos_mas_mencionados_global: List[AttributeFrequencyItem]
     menciones_sin_clasificar: UnclassifiedMentionsSummary
     sentimientos_establecimiento: EstablishmentTrendsSummary = EstablishmentTrendsSummary()
+
+
+class AnalyticsChatRequest(BaseModel):
+    pregunta: str = Field(min_length=3, max_length=500)
+
+
+class ChatMetric(str, Enum):
+    menciones = "menciones"
+    positivas = "positivas"
+    negativas = "negativas"
+    neutrales = "neutrales"
+    wilson_score = "wilson_score"
+
+
+class ChatGrouping(str, Enum):
+    platillo = "platillo"
+    atributo = "atributo"
+    establecimiento = "establecimiento"
+
+
+class AnalyticsChatPlan(BaseModel):
+    metrica: ChatMetric
+    agrupacion: ChatGrouping
+    periodo_dias: int = Field(default=7, ge=1, le=90)
+
+
+class AnalyticsChatDataPoint(BaseModel):
+    etiqueta: str
+    valor: float
+
+
+class AnalyticsChatChart(BaseModel):
+    tipo: str = "bar"
+    titulo: str
+    eje_x: str = "etiqueta"
+    eje_y: str = "valor"
+    datos: List[AnalyticsChatDataPoint]
+
+
+class AnalyticsChatResponse(BaseModel):
+    respuesta: str
+    consulta_interpretada: AnalyticsChatPlan
+    grafica: AnalyticsChatChart

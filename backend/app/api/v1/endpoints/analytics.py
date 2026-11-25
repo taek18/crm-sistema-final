@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.analytics import RankingResponse, TrendsResponse
+from app.schemas.analytics import AnalyticsChatRequest, AnalyticsChatResponse, RankingResponse, TrendsResponse
+from app.services.analytics_chat_service import AnalyticsChatError, analytics_chat_service
 from app.services.ranking_service import ranking_service
 
 router = APIRouter()
@@ -26,3 +27,11 @@ def get_trends(
     y un desglose separado para menciones no clasificadas.
     """
     return ranking_service.calculate_trends(db, dias=dias)
+
+
+@router.post("/chat", response_model=AnalyticsChatResponse, summary="Consultar estadísticas mediante lenguaje natural")
+def ask_analytics_chat(payload: AnalyticsChatRequest, db: Session = Depends(get_db)):
+    try:
+        return analytics_chat_service.ask(db, payload.pregunta)
+    except AnalyticsChatError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
